@@ -7,22 +7,24 @@
 <title>Estudo Bíblico para Noisee 😁</title>
 
 <style>
+:root {
+  --cor: #22c55e;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: white;
+}
+
 body {
   margin:0;
   font-family: Arial;
-  background:#0f172a;
-  color:white;
+  background: var(--bg);
+  color: var(--text);
 }
 
 header {
-  text-align:center;
   padding:15px;
-  background:#1e293b;
-}
-
-.frase {
-  font-size:14px;
-  opacity:0.7;
+  text-align:center;
+  background: var(--card);
 }
 
 button {
@@ -30,7 +32,7 @@ button {
   margin:5px;
   border:none;
   border-radius:8px;
-  background:#22c55e;
+  background: var(--cor);
   color:white;
 }
 
@@ -44,18 +46,9 @@ button {
   gap:6px;
 }
 
-.verso {
-  margin:5px 0;
-  padding:8px;
-  background:#1e293b;
-  border-radius:8px;
-}
-
-input {
-  width:90%;
-  padding:8px;
-  border-radius:8px;
-  border:none;
+.temas button {
+  display:block;
+  width:100%;
 }
 
 </style>
@@ -65,18 +58,36 @@ input {
 
 <header>
 📖 Estudo Bíblico para Noisee 😁
-<div class="frase">Para Vic e Yuki</div>
 </header>
 
 <div class="container">
+
+<!-- HOME -->
+<div id="home">
+
+<h2>Para Vic e Yuki ❤️</h2>
+
+<p>Bem-vindo ao seu estudo bíblico.</p>
+
+<button onclick="abrir('biblia')">📖 Bíblia</button>
+<button>📚 Estudo profundo</button>
+<button>🎧 Áudio</button>
+<button>⚙️ Configurações</button>
+
+</div>
+
+<!-- BÍBLIA -->
+<div id="biblia" class="hidden">
+
+<button onclick="abrir('home')">⬅ Voltar</button>
+
+<h3>Livros</h3>
+<div class="livros" id="livros"></div>
 
 <input id="busca" placeholder="Ex: João 3:16">
 <button onclick="buscar()">Buscar</button>
 
 <div id="conteudo"></div>
-
-<h3>📖 Livros</h3>
-<div class="livros" id="livros"></div>
 
 <h3>⭐ Favoritos</h3>
 <div id="favoritos"></div>
@@ -86,7 +97,29 @@ input {
 
 </div>
 
+<!-- TEMAS -->
+<div id="temas" class="hidden">
+<button onclick="setCor('#22c55e')">Verde</button>
+<button onclick="setCor('#3b82f6')">Azul</button>
+<button onclick="setCor('#ec4899')">Rosa</button>
+<button onclick="setCor('#ef4444')">Vermelho</button>
+<button onclick="abrir('home')">⬅ Voltar</button>
+</div>
+
+<button onclick="abrir('temas')">🎨 Tema</button>
+
+</div>
+
 <script>
+
+function abrir(id){
+  document.querySelectorAll('.container > div').forEach(e=>e.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function setCor(c){
+  document.documentElement.style.setProperty('--cor', c);
+}
 
 const livros = [
 "Gênesis","Êxodo","Levítico","Números","Deuteronômio",
@@ -106,62 +139,68 @@ const livros = [
 const livrosDiv = document.getElementById("livros");
 
 livros.forEach(l=>{
-  const btn=document.createElement("button");
-  btn.innerText=l;
-  btn.onclick=()=>abrirLivro(l);
-  livrosDiv.appendChild(btn);
+  const b=document.createElement("button");
+  b.innerText=l;
+  b.onclick=()=>abrirLivro(l);
+  livrosDiv.appendChild(b);
 });
 
-async function abrirLivro(livro){
-  salvarRecente(livro);
-  document.getElementById("conteudo").innerHTML="Carregando...";
-  
-  const res=await fetch(`https://bible-api.com/${livro}+1?translation=almeida`);
+async function abrirLivro(l){
+  salvarRecente(l);
+  const res=await fetch(`https://bible-api.com/${l}+1?translation=almeida`);
   const data=await res.json();
 
-  mostrarVersos(data);
-}
+  let html=`<h3>${data.reference}</h3><p>`;
 
-function mostrarVersos(data){
-  let html=`<h3>${data.reference}</h3>`;
   data.verses.forEach(v=>{
-    html+=`<div class="verso">
-    <b>${v.verse}</b> ${v.text}
-    <br><button onclick="favoritar('${data.reference} - ${v.verse}')">⭐</button>
-    </div>`;
+    html+=`<span onmousedown="favoritar('${data.reference} ${v.verse}')">
+    ${v.verse} ${v.text}
+    </span> `;
   });
+
+  html+=`</p>`;
+
   document.getElementById("conteudo").innerHTML=html;
 }
 
 async function buscar(){
-  const texto=document.getElementById("busca").value;
-  const res=await fetch(`https://bible-api.com/${texto}?translation=almeida`);
+  const t=document.getElementById("busca").value;
+  const res=await fetch(`https://bible-api.com/${t}?translation=almeida`);
   const data=await res.json();
-  mostrarVersos(data);
+
+  let html=`<h3>${data.reference}</h3><p>`;
+
+  data.verses.forEach(v=>{
+    html+=`${v.verse} ${v.text} `;
+  });
+
+  html+=`</p>`;
+
+  document.getElementById("conteudo").innerHTML=html;
 }
 
 function favoritar(v){
-  let fav=JSON.parse(localStorage.getItem("fav")||"[]");
-  fav.push(v);
-  localStorage.setItem("fav",JSON.stringify(fav));
+  let f=JSON.parse(localStorage.getItem("fav")||"[]");
+  f.push(v);
+  localStorage.setItem("fav",JSON.stringify(f));
   mostrarFav();
 }
 
 function mostrarFav(){
-  let fav=JSON.parse(localStorage.getItem("fav")||"[]");
-  document.getElementById("favoritos").innerHTML=fav.map(f=>`<div>${f}</div>`).join("");
+  let f=JSON.parse(localStorage.getItem("fav")||"[]");
+  document.getElementById("favoritos").innerHTML=f.map(x=>`<div>${x}</div>`).join("");
 }
 
 function salvarRecente(l){
-  let rec=JSON.parse(localStorage.getItem("rec")||"[]");
-  rec.unshift(l);
-  localStorage.setItem("rec",JSON.stringify(rec.slice(0,5)));
+  let r=JSON.parse(localStorage.getItem("rec")||"[]");
+  r.unshift(l);
+  localStorage.setItem("rec",JSON.stringify(r.slice(0,5)));
   mostrarRec();
 }
 
 function mostrarRec(){
-  let rec=JSON.parse(localStorage.getItem("rec")||"[]");
-  document.getElementById("recentes").innerHTML=rec.map(r=>`<div>${r}</div>`).join("");
+  let r=JSON.parse(localStorage.getItem("rec")||"[]");
+  document.getElementById("recentes").innerHTML=r.map(x=>`<div>${x}</div>`).join("");
 }
 
 mostrarFav();
