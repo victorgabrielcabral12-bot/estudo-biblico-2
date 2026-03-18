@@ -8,13 +8,13 @@
 
 <style>
 :root {
-  --bg: #121212;
-  --card: #1e1e1e;
+  --bg: #0f172a;
+  --card: #1e293b;
   --text: #ffffff;
 }
 
 .light {
-  --bg: #f5f5f5;
+  --bg: #f1f5f9;
   --card: #ffffff;
   --text: #000000;
 }
@@ -22,7 +22,7 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: var(--bg);
+  background: linear-gradient(135deg, #0f172a, #020617);
   color: var(--text);
 }
 
@@ -35,17 +35,16 @@ header {
 
 .menu {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   padding: 10px;
 }
 
 button {
-  padding: 10px 15px;
+  padding: 10px;
   margin: 5px;
   border: none;
   border-radius: 10px;
-  background: #4CAF50;
+  background: #22c55e;
   color: white;
   cursor: pointer;
 }
@@ -65,30 +64,26 @@ button {
   display: none;
 }
 
-textarea {
-  width: 100%;
-  height: 120px;
-  border-radius: 10px;
-  padding: 10px;
-  border: none;
-}
-
-.interlinear {
-  text-align: center;
+.section-title {
   margin-top: 20px;
+  font-size: 18px;
+  text-align: center;
 }
 
-.hebrew {
-  font-size: 24px;
-  direction: rtl;
+.livros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
-.translation {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 5px;
-  flex-wrap: wrap;
+.livros button {
+  background: #334155;
+  font-size: 12px;
+}
+
+#livroSelecionado {
+  margin-top: 20px;
+  text-align: center;
 }
 </style>
 </head>
@@ -99,9 +94,7 @@ textarea {
 
 <div class="menu">
 <button onclick="mostrar('home')">🏠</button>
-<button onclick="mostrar('leitura')">📖</button>
-<button onclick="mostrar('anotacoes')">✍️</button>
-<button onclick="mostrar('profundo')">🔍</button>
+<button onclick="mostrar('biblia')">📖 Bíblia</button>
 <button onclick="trocarTema()">🌙/☀️</button>
 </div>
 
@@ -112,44 +105,91 @@ textarea {
 <p>Seu espaço de estudo bíblico.</p>
 </div>
 
-<div id="leitura" class="card hidden">
-<h2>Gênesis 1:1</h2>
+<div id="biblia" class="card hidden">
 
-<select id="versao" onchange="trocarVersao()">
-<option value="facil">Linguagem Fácil</option>
-<option value="almeida">Almeida</option>
-</select>
+<h2 style="text-align:center;">Livros da Bíblia</h2>
 
-<p id="textoBiblia">
-No princípio Deus criou os céus e a terra.
-</p>
+<div class="section-title">Antigo Testamento</div>
+
+<div class="livros">
+
+<button onclick="abrirLivro('Gênesis')">Gênesis</button>
+<button onclick="abrirLivro('Êxodo')">Êxodo</button>
+<button onclick="abrirLivro('Levítico')">Levítico</button>
+<button onclick="abrirLivro('Números')">Números</button>
+<button onclick="abrirLivro('Deuteronômio')">Deuteronômio</button>
+<button onclick="abrirLivro('Josué')">Josué</button>
+<button onclick="abrirLivro('Juízes')">Juízes</button>
+<button onclick="abrirLivro('Rute')">Rute</button>
+<button onclick="abrirLivro('1 Samuel')">1 Samuel</button>
+<button onclick="abrirLivro('2 Samuel')">2 Samuel</button>
+<button onclick="abrirLivro('1 Reis')">1 Reis</button>
+<button onclick="abrirLivro('2 Reis')">2 Reis</button>
+<button onclick="abrirLivro('1 Crônicas')">1 Crônicas</button>
+<button onclick="abrirLivro('2 Crônicas')">2 Crônicas</button>
+<button onclick="abrirLivro('Esdras')">Esdras</button>
+<button onclick="abrirLivro('Neemias')">Neemias</button>
+<button onclick="abrirLivro('Ester')">Ester</button>
+<button onclick="abrirLivro('Jó')">Jó</button>
+<button onclick="abrirLivro('Salmos')">Salmos</button>
+<button onclick="abrirLivro('Provérbios')">Provérbios</button>
+<button onclick="abrirLivro('Eclesiastes')">Eclesiastes</button>
+<button onclick="abrirLivro('Cantares')">Cantares</button>
+<button onclick="abrirLivro('Isaías')">Isaías</button>
+<button onclick="abrirLivro('Jeremias')">Jeremias</button>
+<button onclick="abrirLivro('Lamentações')">Lamentações</button>
+<button onclick="abrirLivro('Ezequiel')">Ezequiel</button>
+<button onclick="abrirLivro('Daniel')">Daniel</button>
+<button onclick="abrirLivro('Oséias')">Oséias</button>
+<button onclick="abrirLivro('Joel')">Joel</button>
+<button onclick="abrirLivro('Amós')">Amós</button>
+<button onclick="abrirLivro('Obadias')">Obadias</button>
+<button onclick="abrirLivro('Jonas')">Jonas</button>
+<button onclick="abrirLivro('Miquéias')">Miquéias</button>
+<button onclick="abrirLivro('Naum')">Naum</button>
+<button onclick="abrirLivro('Habacuque')">Habacuque</button>
+<button onclick="abrirLivro('Sofonias')">Sofonias</button>
+<button onclick="abrirLivro('Ageu')">Ageu</button>
+<button onclick="abrirLivro('Zacarias')">Zacarias</button>
+<button onclick="abrirLivro('Malaquias')">Malaquias</button>
+
 </div>
 
-<div id="anotacoes" class="card hidden">
-<h2>Suas Anotações</h2>
-<textarea id="texto"></textarea>
+<div class="section-title">Novo Testamento</div>
+
+<div class="livros">
+
+<button onclick="abrirLivro('Mateus')">Mateus</button>
+<button onclick="abrirLivro('Marcos')">Marcos</button>
+<button onclick="abrirLivro('Lucas')">Lucas</button>
+<button onclick="abrirLivro('João')">João</button>
+<button onclick="abrirLivro('Atos')">Atos</button>
+<button onclick="abrirLivro('Romanos')">Romanos</button>
+<button onclick="abrirLivro('1 Coríntios')">1 Coríntios</button>
+<button onclick="abrirLivro('2 Coríntios')">2 Coríntios</button>
+<button onclick="abrirLivro('Gálatas')">Gálatas</button>
+<button onclick="abrirLivro('Efésios')">Efésios</button>
+<button onclick="abrirLivro('Filipenses')">Filipenses</button>
+<button onclick="abrirLivro('Colossenses')">Colossenses</button>
+<button onclick="abrirLivro('1 Tessalonicenses')">1 Tessalonicenses</button>
+<button onclick="abrirLivro('2 Tessalonicenses')">2 Tessalonicenses</button>
+<button onclick="abrirLivro('1 Timóteo')">1 Timóteo</button>
+<button onclick="abrirLivro('2 Timóteo')">2 Timóteo</button>
+<button onclick="abrirLivro('Tito')">Tito</button>
+<button onclick="abrirLivro('Filemom')">Filemom</button>
+<button onclick="abrirLivro('Hebreus')">Hebreus</button>
+<button onclick="abrirLivro('Tiago')">Tiago</button>
+<button onclick="abrirLivro('1 Pedro')">1 Pedro</button>
+<button onclick="abrirLivro('2 Pedro')">2 Pedro</button>
+<button onclick="abrirLivro('1 João')">1 João</button>
+<button onclick="abrirLivro('2 João')">2 João</button>
+<button onclick="abrirLivro('3 João')">3 João</button>
+<button onclick="abrirLivro('Judas')">Judas</button>
+<button onclick="abrirLivro('Apocalipse')">Apocalipse</button>
+
 </div>
 
-<div id="profundo" class="card hidden">
-<h2>Estudo Profundo</h2>
-
-<div class="interlinear">
-
-<div class="hebrew">
-בְּרֵאשִׁית &nbsp; בָּרָא &nbsp; אֱלֹהִים
-</div>
-
-<div class="translation">
-<span>No princípio</span>
-<span>criou</span>
-<span>Deus</span>
-</div>
-
-</div>
-
-<p style="margin-top:15px;">
-Tradução completa: No princípio Deus criou os céus e a terra.
-</p>
+<div id="livroSelecionado"></div>
 
 </div>
 
@@ -166,23 +206,10 @@ function trocarTema(){
   document.body.classList.toggle('light');
 }
 
-function trocarVersao(){
-  const versao = document.getElementById("versao").value;
-  const texto = document.getElementById("textoBiblia");
-
-  if(versao === "facil"){
-    texto.innerText = "No princípio Deus criou os céus e a terra.";
-  } else {
-    texto.innerText = "No princípio criou Deus os céus e a terra.";
-  }
+function abrirLivro(nome){
+  document.getElementById("livroSelecionado").innerHTML =
+    "<h3>"+nome+"</h3><p>Capítulos em breve...</p>";
 }
-
-const textarea = document.getElementById("texto");
-textarea.value = localStorage.getItem("nota") || "";
-
-textarea.addEventListener("input", () => {
-  localStorage.setItem("nota", textarea.value);
-});
 
 </script>
 
