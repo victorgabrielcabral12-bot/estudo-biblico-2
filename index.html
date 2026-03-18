@@ -7,46 +7,54 @@
 <title>Bíblia Noisee 😁</title>
 
 <style>
-:root {
-  --cor:#22c55e;
-  --bg:#0f172a;
-  --card:#1e293b;
-  --text:white;
+:root{
+--cor:#22c55e;
+--bg:#0f172a;
+--card:#1e293b;
+--text:white;
 }
 
 body{
-  margin:0;
-  font-family:Arial;
-  background:var(--bg);
-  color:var(--text);
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
 }
 
 header{
-  padding:15px;
-  text-align:center;
-  background:var(--card);
+padding:15px;
+text-align:center;
+background:var(--card);
 }
 
 button{
-  padding:8px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
-  background:var(--cor);
-  color:white;
+padding:8px;
+margin:5px;
+border:none;
+border-radius:8px;
+background:var(--cor);
+color:white;
 }
 
-.hidden{display:none;}
 .container{padding:15px;}
+.hidden{display:none;}
 
-.verso{margin-bottom:10px;}
+.livros,.caps{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:5px;
+}
+
+.verso{
+margin-bottom:10px;
+line-height:1.5;
+}
 
 .interlinear{
-  font-size:12px;
-  opacity:0.8;
-  margin-left:10px;
+font-size:12px;
+opacity:0.8;
+margin-left:10px;
 }
-
 </style>
 </head>
 
@@ -61,153 +69,177 @@ button{
 <h2>Para Vic e Yuki ❤️</h2>
 
 <button onclick="abrir('biblia')">📖 Bíblia</button>
-<button onclick="abrir('favoritosTela')">⭐ Favoritos</button>
-<button onclick="abrir('recentesTela')">📌 Últimos</button>
+<button onclick="abrir('favoritos')">⭐ Favoritos</button>
+<button onclick="abrir('recentes')">📌 Últimos</button>
 <button onclick="toggleEstudo()">🧠 Estudo</button>
-<button onclick="setEscuro()">🌙 Escuro</button>
+<button onclick="abrir('temas')">🎨 Tema</button>
 </div>
 
 <!-- BÍBLIA -->
 <div id="biblia" class="hidden">
 <button onclick="abrir('home')">⬅</button>
+<div class="livros" id="livros"></div>
+</div>
 
-<button onclick="abrirTexto('genesis1')">Gênesis 1</button>
-<button onclick="abrirTexto('joao1')">João 1</button>
-<button onclick="abrirTexto('2joao1')">2 João</button>
+<!-- CAPÍTULOS -->
+<div id="capitulos" class="hidden">
+<button onclick="abrir('biblia')">⬅</button>
+<div class="caps" id="caps"></div>
 </div>
 
 <!-- TEXTO -->
 <div id="texto" class="hidden">
-<button onclick="abrir('biblia')">⬅</button>
+<button onclick="abrir('capitulos')">⬅</button>
 <div id="conteudo"></div>
 </div>
 
 <!-- FAVORITOS -->
-<div id="favoritosTela" class="hidden">
+<div id="favoritos" class="hidden">
 <button onclick="abrir('home')">⬅</button>
-<div id="favoritos"></div>
+<div id="fav"></div>
 </div>
 
 <!-- RECENTES -->
-<div id="recentesTela" class="hidden">
+<div id="recentes" class="hidden">
 <button onclick="abrir('home')">⬅</button>
-<div id="recentes"></div>
+<div id="rec"></div>
+</div>
+
+<!-- TEMAS -->
+<div id="temas" class="hidden">
+<button onclick="setCor('#22c55e')">Verde</button>
+<button onclick="setCor('#3b82f6')">Azul</button>
+<button onclick="setCor('#ec4899')">Rosa</button>
+<button onclick="setCor('#ef4444')">Vermelho</button>
+<button onclick="setCor('#9333ea')">Roxo</button>
+<button onclick="setCor('#f97316')">Laranja</button>
+<button onclick="setCor('#eab308')">Dourado</button>
+<button onclick="setEscuro()">Escuro</button>
+<button onclick="setClaro()">Claro</button>
+<button onclick="abrir('home')">⬅ Voltar</button>
 </div>
 
 </div>
+
+<script src="biblia.js"></script>
+<script src="estudo.js"></script>
 
 <script>
 
+// CONTROLE
 let estudo=false;
+let tempo,versoSel;
 
-function toggleEstudo(){
-  estudo=!estudo;
-  alert(estudo?"Estudo ON":"Estudo OFF");
+// NAVEGAÇÃO
+function abrir(id){
+document.querySelectorAll('.container > div').forEach(e=>e.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+
+if(id==="favoritos") mostrarFav();
+if(id==="recentes") mostrarRec();
 }
 
-function abrir(id){
-  document.querySelectorAll('.container > div').forEach(e=>e.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-
-  if(id==="favoritosTela") mostrarFav();
-  if(id==="recentesTela") mostrarRec();
+// TEMAS
+function setCor(c){
+document.documentElement.style.setProperty('--cor',c);
 }
 
 function setEscuro(){
-  document.documentElement.style.setProperty('--bg','#0f172a');
-  document.documentElement.style.setProperty('--card','#1e293b');
-  document.documentElement.style.setProperty('--text','#fff');
+document.documentElement.style.setProperty('--bg','#0f172a');
+document.documentElement.style.setProperty('--card','#1e293b');
+document.documentElement.style.setProperty('--text','#fff');
 }
 
-// DADOS (SEM ERRO)
-
-const textos={
-genesis1:[
-["1","No princípio criou Deus os céus e a terra",
-"בְּרֵאשִׁית (Bereshit) = princípio"],
-["2","A terra era sem forma e vazia",
-"תֹהוּ (Tohu) = vazio"]
-],
-
-joao1:[
-["1","No princípio era o Verbo",
-"Λόγος (Logos) = Palavra"],
-["2","Ele estava com Deus",
-"θεός (Theos) = Deus"]
-],
-
-"2joao1":[
-["1","O presbítero à senhora eleita",
-"πρεσβύτερος = ancião"],
-["2","Por causa da verdade que permanece em nós",
-"ἀλήθεια = verdade"],
-["3","Graça, misericórdia e paz estarão conosco",
-"χάρις = graça"]
-]
-};
-
-let tempo,versoSel;
-
-function abrirTexto(chave){
-  abrir("texto");
-
-  let html="";
-
-  textos[chave].forEach(v=>{
-    html+=`
-    <div class="verso"
-    ontouchstart="segurar('${v[1]}')"
-    ontouchend="cancelar()">
-    <b>${v[0]}</b> ${v[1]}
-    ${estudo?`<div class="interlinear">${v[2]}</div>`:""}
-    </div>`;
-  });
-
-  document.getElementById("conteudo").innerHTML=html;
-
-  salvarRecente(chave);
+function setClaro(){
+document.documentElement.style.setProperty('--bg','#f1f5f9');
+document.documentElement.style.setProperty('--card','#fff');
+document.documentElement.style.setProperty('--text','#000');
 }
 
-// SEGURAR 2s
-
-function segurar(v){
-  versoSel=v;
-  tempo=setTimeout(()=>{
-    fav();
-    navigator.vibrate(200);
-  },2000);
+// ESTUDO
+function toggleEstudo(){
+estudo=!estudo;
+alert(estudo?"Estudo ON":"Estudo OFF");
 }
 
-function cancelar(){
-  clearTimeout(tempo);
+// LIVROS
+const livrosDiv=document.getElementById("livros");
+
+Object.keys(BIBLIA).forEach(l=>{
+let b=document.createElement("button");
+b.innerText=l;
+b.onclick=()=>abrirCaps(l);
+livrosDiv.appendChild(b);
+});
+
+// CAPÍTULOS
+function abrirCaps(l){
+abrir("capitulos");
+
+let capsDiv=document.getElementById("caps");
+capsDiv.innerHTML="";
+
+for(let c in BIBLIA[l]){
+let b=document.createElement("button");
+b.innerText=c;
+b.onclick=()=>abrirTexto(l,c);
+capsDiv.appendChild(b);
+}
+}
+
+// TEXTO
+function abrirTexto(l,c){
+abrir("texto");
+
+let html="";
+
+BIBLIA[l][c].forEach((v,i)=>{
+let estudoTxt=ESTUDO[l]?.[c]?.[i] || "";
+
+html+=`
+<div class="verso"
+ontouchstart="segurar('${v}')"
+ontouchend="cancelar()">
+<b>${i+1}</b> ${v}
+${estudo && estudoTxt?`<div class="interlinear">${estudoTxt}</div>`:""}
+</div>`;
+});
+
+document.getElementById("conteudo").innerHTML=html;
+
+salvarRec(l+" "+c);
 }
 
 // FAVORITO (1 só)
+function segurar(v){
+versoSel=v;
+tempo=setTimeout(()=>{
+localStorage.setItem("fav",JSON.stringify([v]));
+navigator.vibrate(200);
+},2000);
+}
 
-function fav(){
-  localStorage.setItem("fav",JSON.stringify([versoSel]));
+function cancelar(){
+clearTimeout(tempo);
 }
 
 // MOSTRAR FAVORITO
-
 function mostrarFav(){
-  let f=JSON.parse(localStorage.getItem("fav")||"[]");
-  document.getElementById("favoritos").innerHTML=
-  f.length?f[0]:"nada favoritado 😝";
+let f=JSON.parse(localStorage.getItem("fav")||"[]");
+document.getElementById("fav").innerHTML=f.length?f[0]:"nada favoritado 😝";
 }
 
 // RECENTES
-
-function salvarRecente(l){
-  let r=JSON.parse(localStorage.getItem("rec")||"[]");
-  r.unshift(l);
-  r=[...new Set(r)];
-  localStorage.setItem("rec",JSON.stringify(r.slice(0,5)));
+function salvarRec(x){
+let r=JSON.parse(localStorage.getItem("rec")||"[]");
+r.unshift(x);
+r=[...new Set(r)];
+localStorage.setItem("rec",JSON.stringify(r.slice(0,5)));
 }
 
 function mostrarRec(){
-  let r=JSON.parse(localStorage.getItem("rec")||"[]");
-  document.getElementById("recentes").innerHTML=r.join("<br>");
+let r=JSON.parse(localStorage.getItem("rec")||"[]");
+document.getElementById("rec").innerHTML=r.join("<br>");
 }
 
 </script>
