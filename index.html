@@ -46,9 +46,9 @@ button {
   gap:6px;
 }
 
-.temas button {
-  display:block;
-  width:100%;
+.verso {
+  margin-bottom:10px;
+  line-height:1.5;
 }
 
 </style>
@@ -64,16 +64,12 @@ button {
 
 <!-- HOME -->
 <div id="home">
-
 <h2>Para Vic e Yuki ❤️</h2>
 
-<p>Bem-vindo ao seu estudo bíblico.</p>
-
 <button onclick="abrir('biblia')">📖 Bíblia</button>
-<button>📚 Estudo profundo</button>
-<button>🎧 Áudio</button>
-<button>⚙️ Configurações</button>
-
+<button onclick="abrir('favoritosTela')">⭐ Favoritos</button>
+<button onclick="abrir('recentesTela')">📌 Últimos</button>
+<button onclick="abrir('temas')">🎨 Tema</button>
 </div>
 
 <!-- BÍBLIA -->
@@ -81,20 +77,28 @@ button {
 
 <button onclick="abrir('home')">⬅ Voltar</button>
 
-<h3>Livros</h3>
-<div class="livros" id="livros"></div>
-
 <input id="busca" placeholder="Ex: João 3:16">
 <button onclick="buscar()">Buscar</button>
 
+<h3>Livros</h3>
+<div class="livros" id="livros"></div>
+
 <div id="conteudo"></div>
 
+</div>
+
+<!-- FAVORITOS -->
+<div id="favoritosTela" class="hidden">
+<button onclick="abrir('home')">⬅ Voltar</button>
 <h3>⭐ Favoritos</h3>
 <div id="favoritos"></div>
+</div>
 
+<!-- RECENTES -->
+<div id="recentesTela" class="hidden">
+<button onclick="abrir('home')">⬅ Voltar</button>
 <h3>📌 Últimos acessados</h3>
 <div id="recentes"></div>
-
 </div>
 
 <!-- TEMAS -->
@@ -105,8 +109,6 @@ button {
 <button onclick="setCor('#ef4444')">Vermelho</button>
 <button onclick="abrir('home')">⬅ Voltar</button>
 </div>
-
-<button onclick="abrir('temas')">🎨 Tema</button>
 
 </div>
 
@@ -147,18 +149,20 @@ livros.forEach(l=>{
 
 async function abrirLivro(l){
   salvarRecente(l);
+
   const res=await fetch(`https://bible-api.com/${l}+1?translation=almeida`);
   const data=await res.json();
 
-  let html=`<h3>${data.reference}</h3><p>`;
+  let html=`<h3>${data.reference}</h3>`;
 
   data.verses.forEach(v=>{
-    html+=`<span onmousedown="favoritar('${data.reference} ${v.verse}')">
-    ${v.verse} ${v.text}
-    </span> `;
+    html+=`
+    <div class="verso"
+    ontouchstart="startPress('${data.reference} ${v.verse}')"
+    ontouchend="cancelPress()">
+    <b>${v.verse}</b> ${v.text}
+    </div>`;
   });
-
-  html+=`</p>`;
 
   document.getElementById("conteudo").innerHTML=html;
 }
@@ -168,22 +172,38 @@ async function buscar(){
   const res=await fetch(`https://bible-api.com/${t}?translation=almeida`);
   const data=await res.json();
 
-  let html=`<h3>${data.reference}</h3><p>`;
+  let html=`<h3>${data.reference}</h3>`;
 
   data.verses.forEach(v=>{
-    html+=`${v.verse} ${v.text} `;
+    html+=`<div class="verso"><b>${v.verse}</b> ${v.text}</div>`;
   });
-
-  html+=`</p>`;
 
   document.getElementById("conteudo").innerHTML=html;
 }
 
+// FAVORITAR COM SEGURAR
+
+let tempo;
+
+function startPress(v){
+  tempo=setTimeout(()=>{
+    favoritar(v);
+    navigator.vibrate(200);
+  },2000);
+}
+
+function cancelPress(){
+  clearTimeout(tempo);
+}
+
 function favoritar(v){
   let f=JSON.parse(localStorage.getItem("fav")||"[]");
-  f.push(v);
-  localStorage.setItem("fav",JSON.stringify(f));
-  mostrarFav();
+
+  if(!f.includes(v)){
+    f.push(v);
+    localStorage.setItem("fav",JSON.stringify(f));
+    mostrarFav();
+  }
 }
 
 function mostrarFav(){
@@ -194,6 +214,9 @@ function mostrarFav(){
 function salvarRecente(l){
   let r=JSON.parse(localStorage.getItem("rec")||"[]");
   r.unshift(l);
+
+  r=[...new Set(r)];
+
   localStorage.setItem("rec",JSON.stringify(r.slice(0,5)));
   mostrarRec();
 }
