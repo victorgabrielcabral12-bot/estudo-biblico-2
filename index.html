@@ -4,33 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estudo Bíblico para Noisee 😁</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<title>Bíblia Noisee 😁</title>
 
 <style>
 :root {
-  --cor: #22c55e;
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: white;
+  --cor:#22c55e;
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:white;
 }
 
-body {
+body{
   margin:0;
-  font-family:'Inter', sans-serif;
+  font-family:Arial;
   background:var(--bg);
   color:var(--text);
 }
 
-header {
+header{
   padding:15px;
   text-align:center;
   background:var(--card);
-  font-weight:bold;
 }
 
-button {
+button{
   padding:8px;
   margin:5px;
   border:none;
@@ -39,41 +36,23 @@ button {
   color:white;
 }
 
-.container { padding:15px; }
+.hidden{display:none;}
+.container{padding:15px;}
 
-.hidden { display:none; }
+.verso{margin-bottom:10px;}
 
-.livros,.caps {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:6px;
+.interlinear{
+  font-size:12px;
+  opacity:0.8;
+  margin-left:10px;
 }
 
-.verso {
-  margin-bottom:10px;
-  line-height:1.6;
-}
-
-.deus {
-  color:#1e3a8a;
-  font-weight:bold;
-}
-
-.menu-popup {
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#1e293b;
-  padding:10px;
-  border-radius:10px;
-}
 </style>
 </head>
 
 <body>
 
-<header>📖 Estudo Bíblico para Noisee 😁</header>
+<header>📖 Bíblia Noisee 😁</header>
 
 <div class="container">
 
@@ -84,62 +63,47 @@ button {
 <button onclick="abrir('biblia')">📖 Bíblia</button>
 <button onclick="abrir('favoritosTela')">⭐ Favoritos</button>
 <button onclick="abrir('recentesTela')">📌 Últimos</button>
-<button>📚 Estudo profundo</button>
-<button>🎧 Áudio</button>
-<button>⚙️ Config</button>
-<button onclick="abrir('temas')">🎨 Tema</button>
+<button onclick="toggleEstudo()">🧠 Estudo</button>
+<button onclick="setEscuro()">🌙 Escuro</button>
 </div>
 
 <!-- BÍBLIA -->
 <div id="biblia" class="hidden">
 <button onclick="abrir('home')">⬅</button>
-<h3>Livros</h3>
-<div class="livros" id="livros"></div>
-</div>
 
-<!-- CAPÍTULOS -->
-<div id="capitulos" class="hidden">
-<button onclick="abrir('biblia')">⬅</button>
-<h3 id="tituloLivro"></h3>
-<div class="caps" id="caps"></div>
+<button onclick="abrirTexto('genesis1')">Gênesis 1</button>
+<button onclick="abrirTexto('joao1')">João 1</button>
+<button onclick="abrirTexto('2joao1')">2 João</button>
 </div>
 
 <!-- TEXTO -->
 <div id="texto" class="hidden">
-<button onclick="abrir('capitulos')">⬅</button>
+<button onclick="abrir('biblia')">⬅</button>
 <div id="conteudo"></div>
 </div>
 
 <!-- FAVORITOS -->
 <div id="favoritosTela" class="hidden">
 <button onclick="abrir('home')">⬅</button>
-<h3>⭐ Favoritos</h3>
 <div id="favoritos"></div>
 </div>
 
 <!-- RECENTES -->
 <div id="recentesTela" class="hidden">
 <button onclick="abrir('home')">⬅</button>
-<h3>📌 Últimos acessados</h3>
 <div id="recentes"></div>
-</div>
-
-<!-- TEMAS -->
-<div id="temas" class="hidden">
-<button onclick="setCor('#22c55e')">Verde</button>
-<button onclick="setCor('#3b82f6')">Azul</button>
-<button onclick="setCor('#ec4899')">Rosa</button>
-<button onclick="setCor('#ef4444')">Vermelho</button>
-<button onclick="setCor('#9333ea')">Roxo</button>
-<button onclick="setCor('#f97316')">Laranja</button>
-<button onclick="setCor('#eab308')">Dourado</button>
-<button onclick="setCor('#ffffff');setClaro()">Claro</button>
-<button onclick="abrir('home')">⬅ Voltar</button>
 </div>
 
 </div>
 
 <script>
+
+let estudo=false;
+
+function toggleEstudo(){
+  estudo=!estudo;
+  alert(estudo?"Estudo ON":"Estudo OFF");
+}
 
 function abrir(id){
   document.querySelectorAll('.container > div').forEach(e=>e.classList.add('hidden'));
@@ -149,87 +113,67 @@ function abrir(id){
   if(id==="recentesTela") mostrarRec();
 }
 
-function setCor(c){
-  document.documentElement.style.setProperty('--cor',c);
+function setEscuro(){
+  document.documentElement.style.setProperty('--bg','#0f172a');
+  document.documentElement.style.setProperty('--card','#1e293b');
+  document.documentElement.style.setProperty('--text','#fff');
 }
 
-function setClaro(){
-  document.documentElement.style.setProperty('--bg','#f1f5f9');
-  document.documentElement.style.setProperty('--card','#ffffff');
-  document.documentElement.style.setProperty('--text','#000');
-}
+// DADOS (SEM ERRO)
 
-const estrutura={
-"Gênesis":50,"Êxodo":40,"Levítico":27,"Números":36,"Deuteronômio":34,
-"Josué":24,"Juízes":21,"Rute":4,"1 Samuel":31,"2 Samuel":24,"1 Reis":22,"2 Reis":25,
-"1 Crônicas":29,"2 Crônicas":36,"Esdras":10,"Neemias":13,"Ester":10,"Jó":42,"Salmos":150,
-"Provérbios":31,"Eclesiastes":12,"Cantares":8,"Isaías":66,"Jeremias":52,
-"Lamentações":5,"Ezequiel":48,"Daniel":12,"Oséias":14,"Joel":3,"Amós":9,
-"Obadias":1,"Jonas":4,"Miquéias":7,"Naum":3,"Habacuque":3,"Sofonias":3,
-"Ageu":2,"Zacarias":14,"Malaquias":4,
-"Mateus":28,"Marcos":16,"Lucas":24,"João":21,"Atos":28,"Romanos":16,
-"1 Coríntios":16,"2 Coríntios":13,"Gálatas":6,"Efésios":6,"Filipenses":4,
-"Colossenses":4,"1 Tessalonicenses":5,"2 Tessalonicenses":3,
-"1 Timóteo":6,"2 Timóteo":4,"Tito":3,"Filemom":1,"Hebreus":13,
-"Tiago":5,"1 Pedro":5,"2 Pedro":3,"1 João":5,"2 João":1,"3 João":1,"Judas":1,"Apocalipse":22
+const textos={
+genesis1:[
+["1","No princípio criou Deus os céus e a terra",
+"בְּרֵאשִׁית (Bereshit) = princípio"],
+["2","A terra era sem forma e vazia",
+"תֹהוּ (Tohu) = vazio"]
+],
+
+joao1:[
+["1","No princípio era o Verbo",
+"Λόγος (Logos) = Palavra"],
+["2","Ele estava com Deus",
+"θεός (Theos) = Deus"]
+],
+
+"2joao1":[
+["1","O presbítero à senhora eleita",
+"πρεσβύτερος = ancião"],
+["2","Por causa da verdade que permanece em nós",
+"ἀλήθεια = verdade"],
+["3","Graça, misericórdia e paz estarão conosco",
+"χάρις = graça"]
+]
 };
 
-const livrosDiv=document.getElementById("livros");
+let tempo,versoSel;
 
-Object.keys(estrutura).forEach(l=>{
-  const b=document.createElement("button");
-  b.innerText=l;
-  b.onclick=()=>abrirCap(l);
-  livrosDiv.appendChild(b);
-});
-
-function abrirCap(l){
-  abrir("capitulos");
-  document.getElementById("tituloLivro").innerText=l;
-
-  const capsDiv=document.getElementById("caps");
-  capsDiv.innerHTML="";
-
-  for(let i=1;i<=estrutura[l];i++){
-    const b=document.createElement("button");
-    b.innerText=i;
-    b.onclick=()=>abrirTexto(l,i);
-    capsDiv.appendChild(b);
-  }
-}
-
-async function abrirTexto(l,c){
-  salvarRecente(l);
+function abrirTexto(chave){
   abrir("texto");
 
-  const res=await fetch(`https://bible-api.com/${l}+${c}?translation=almeida`);
-  const data=await res.json();
+  let html="";
 
-  let html=`<h3><b>${data.reference}</b></h3>`;
-
-  data.verses.forEach(v=>{
-    let t=v.text;
-    if(t.includes("Senhor")) t=`<span class="deus">${t}</span>`;
-
+  textos[chave].forEach(v=>{
     html+=`
     <div class="verso"
-    ontouchstart="segurar('${data.reference} ${v.verse}')"
+    ontouchstart="segurar('${v[1]}')"
     ontouchend="cancelar()">
-    <b>${v.verse}</b> ${t}
+    <b>${v[0]}</b> ${v[1]}
+    ${estudo?`<div class="interlinear">${v[2]}</div>`:""}
     </div>`;
   });
 
   document.getElementById("conteudo").innerHTML=html;
+
+  salvarRecente(chave);
 }
 
 // SEGURAR 2s
 
-let tempo,versoSel;
-
 function segurar(v){
   versoSel=v;
   tempo=setTimeout(()=>{
-    mostrarMenu();
+    fav();
     navigator.vibrate(200);
   },2000);
 }
@@ -238,39 +182,18 @@ function cancelar(){
   clearTimeout(tempo);
 }
 
-function mostrarMenu(){
-  const menu=document.createElement("div");
-  menu.className="menu-popup";
-  menu.innerHTML=`
-    <button onclick="fav()">⭐ Favoritar</button>
-    <button onclick="fecharMenu()">Fechar</button>
-  `;
-  document.body.appendChild(menu);
-}
-
-function fecharMenu(){
-  document.querySelector(".menu-popup")?.remove();
-}
-
-// FAVORITO (APENAS 1)
+// FAVORITO (1 só)
 
 function fav(){
-  let f=[versoSel];
-  localStorage.setItem("fav",JSON.stringify(f));
-  fecharMenu();
+  localStorage.setItem("fav",JSON.stringify([versoSel]));
 }
 
 // MOSTRAR FAVORITO
 
 function mostrarFav(){
   let f=JSON.parse(localStorage.getItem("fav")||"[]");
-
-  if(f.length===0){
-    document.getElementById("favoritos").innerHTML="nada favoritado 😝";
-    return;
-  }
-
-  document.getElementById("favoritos").innerHTML=`<div>${f[0]}</div>`;
+  document.getElementById("favoritos").innerHTML=
+  f.length?f[0]:"nada favoritado 😝";
 }
 
 // RECENTES
@@ -284,7 +207,7 @@ function salvarRecente(l){
 
 function mostrarRec(){
   let r=JSON.parse(localStorage.getItem("rec")||"[]");
-  document.getElementById("recentes").innerHTML=r.map(x=>`<div>${x}</div>`).join("");
+  document.getElementById("recentes").innerHTML=r.join("<br>");
 }
 
 </script>
